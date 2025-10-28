@@ -4,7 +4,9 @@
 Build a machine learning model to predict whether a loan applicant will default or not based on their financial and demographic information.
 
 ---
+Dataset Link : https://www.kaggle.com/datasets/yasserh/loan-default-dataset
 
+---
 ## 📊 Dataset Overview
 - **Records:** ~148,000  
 - **Target Variable:** `Status` → (0 = No Default, 1 = Default)  
