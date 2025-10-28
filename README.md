@@ -98,25 +98,34 @@ joblib.dump(model_pipeline, 'loan_default_model.pkl')
 
 Metric	Score
 
-Accuracy: 0.8651711845025897
+- Accuracy: 0.8651711845025897
 
-Precision: 0.9481276005547851
+- Precision: 0.9481276005547851
 
-Recall: 0.47209944751381216
+- Recall: 0.47209944751381216
 
-F1-score: 0.630336560627017
+- F1-score: 0.630336560627017
 
-ROC-AUC: 0.8288783577400873
+- ROC-AUC: 0.8288783577400873
 
 
+---
 
 🚀 Next Steps
-Add more models (Decision Tree, Random Forest, XGBoost)
 
-Perform Hyperparameter Tuning using GridSearchCV
+- Add more models (Decision Tree, Random Forest, XGBoost)
 
-Deploy model using Flask or FastAPI
+
+- Perform Hyperparameter Tuning using GridSearchCV
+
+
+- Deploy model using Flask or FastAPI
+
+---
 
 👨‍💻 Author
+
 Revan Mahesh Gaikwad
-Machine Learning & Data Science Enthusiast
+
+(Machine Learning & Data Science Enthusiast)
+
