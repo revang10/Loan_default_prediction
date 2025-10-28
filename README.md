@@ -30,7 +30,7 @@ The dataset was split into training and testing sets using `train_test_split`.
 ### 2️⃣ Preprocessing
 Created pipelines for both numerical and categorical features.
 
-```python
+```
 from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
@@ -53,11 +53,11 @@ preprocessor = ColumnTransformer([
     ('num', num_pipeline, num_col),
     ('cat', cat_pipeline, cat_col)
 ])
+```
 3️⃣ Model Building
 Combined preprocessing and model into a single pipeline.
 
-python
-Copy code
+```
 from sklearn.linear_model import LogisticRegression
 from sklearn.pipeline import Pipeline
 
@@ -65,15 +65,16 @@ model_pipeline = Pipeline([
     ('preprocessor', preprocessor),
     ('model', LogisticRegression(max_iter=1000))
 ])
+```
 4️⃣ Model Training
-python
-Copy code
+
+```
 model_pipeline.fit(X_train, y_train)
+```
 5️⃣ Model Evaluation
 Evaluated using multiple metrics.
 
-python
-Copy code
+```
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, roc_auc_score, classification_report
 
 y_pred = model_pipeline.predict(X_test)
@@ -85,20 +86,23 @@ print("Recall:", recall_score(y_test, y_pred))
 print("F1-score:", f1_score(y_test, y_pred))
 print("ROC-AUC:", roc_auc_score(y_test, y_proba))
 print("\nClassification Report:\n", classification_report(y_test, y_pred))
+```
+
 6️⃣ Model Saving
-python
-Copy code
+
+```
 import joblib
 joblib.dump(model_pipeline, 'loan_default_model.pkl')
+```
 📈 Key Metrics
 Metric	Score
-Accuracy	XX%
-Precision	XX%
-Recall	XX%
-F1-score	XX%
-ROC-AUC	XX%
+Accuracy: 0.8651711845025897
+Precision: 0.9481276005547851
+Recall: 0.47209944751381216
+F1-score: 0.630336560627017
+ROC-AUC: 0.8288783577400873
 
-(Replace XX with your actual results)
+
 
 🚀 Next Steps
 Add more models (Decision Tree, Random Forest, XGBoost)
@@ -108,5 +112,5 @@ Perform Hyperparameter Tuning using GridSearchCV
 Deploy model using Flask or FastAPI
 
 👨‍💻 Author
-[Your Name]
+Revan Mahesh Gaikwad
 Machine Learning & Data Science Enthusiast
