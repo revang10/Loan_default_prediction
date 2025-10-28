@@ -95,11 +95,17 @@ import joblib
 joblib.dump(model_pipeline, 'loan_default_model.pkl')
 ```
 📈 Key Metrics
+
 Metric	Score
+
 Accuracy: 0.8651711845025897
+
 Precision: 0.9481276005547851
+
 Recall: 0.47209944751381216
+
 F1-score: 0.630336560627017
+
 ROC-AUC: 0.8288783577400873
 
 
