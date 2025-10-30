@@ -1,16 +1,21 @@
 # 🧠 Loan Default Prediction using Machine Learning
 
+---
+
 ## 🎯 Objective
 Build a machine learning model to predict whether a loan applicant will default or not based on their financial and demographic information.
 
 ---
-Dataset Link : https://www.kaggle.com/datasets/yasserh/loan-default-dataset
+
+## 📦 Dataset
+**Source:** [Loan Default Dataset – Kaggle](https://www.kaggle.com/datasets/yasserh/loan-default-dataset)
 
 ---
+
 ## 📊 Dataset Overview
 - **Records:** ~148,000  
 - **Target Variable:** `Status` → (0 = No Default, 1 = Default)  
-- **Features:** Applicant information, credit score, income, loan details, etc.
+- **Features:** Applicant information, credit score, income, loan details, and more.
 
 ---
 
@@ -18,28 +23,37 @@ Dataset Link : https://www.kaggle.com/datasets/yasserh/loan-default-dataset
 - pandas  
 - numpy  
 - scikit-learn  
-- matplotlib  
-- seaborn  
+- lightgbm  
 - joblib  
+- streamlit  
 
 ---
 
-## ⚙️ Steps Followed
+## ⚙️ Project Workflow
 
 ### 1️⃣ Data Splitting
-The dataset was split into training and testing sets using `train_test_split`.
+The dataset was split into **training** and **testing** sets using `train_test_split`.
+
+```python
+from sklearn.model_selection import train_test_split
+
+X = df.drop("Status", axis=1)
+y = df["Status"]
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+```
+
+---
 
 ### 2️⃣ Preprocessing
-Created pipelines for both numerical and categorical features.
+Separate pipelines were created for **numerical** and **categorical** features using `ColumnTransformer`.
 
-```
-from sklearn.preprocessing import StandardScaler, OneHotEncoder
-from sklearn.compose import ColumnTransformer
-from sklearn.pipeline import Pipeline
-from sklearn.impute import SimpleImputer
+```python
 
-num_col = X_train.select_dtypes(include=['int64','float64']).columns
-cat_col = X_train.select_dtypes(include=['object']).columns
+
+
 
 num_pipeline = Pipeline([
     ('imputer', SimpleImputer(strategy='median')),
@@ -51,36 +65,47 @@ cat_pipeline = Pipeline([
     ('encoder', OneHotEncoder(handle_unknown='ignore'))
 ])
 
-preprocessor = ColumnTransformer([
-    ('num', num_pipeline, num_col),
-    ('cat', cat_pipeline, cat_col)
-])
-```
-3️⃣ Model Building
-Combined preprocessing and model into a single pipeline.
 
 ```
-from sklearn.linear_model import LogisticRegression
-from sklearn.pipeline import Pipeline
 
-model_pipeline = Pipeline([
+---
+
+### 3️⃣ Model Building — LightGBM Classifier
+Used **LightGBM**, a fast and efficient boosting algorithm, within a pipeline.
+
+```python
+
+lgb_pipe = Pipeline([
     ('preprocessor', preprocessor),
-    ('model', LogisticRegression(max_iter=1000))
+    ('model', LGBMClassifier(random_state=42))
 ])
 ```
-4️⃣ Model Training
+
+---
+
+### 4️⃣ Hyperparameter Tuning
+Performed randomized search for optimized parameters.
+
+```python
+
+
+param_dist = {
+    'model__n_estimators': [100, 300, 500],
+    'model__learning_rate': [0.01, 0.05, 0.1],
+    'model__max_depth': [-1, 5, 7, 9],
+    'model__num_leaves': [15, 31, 63],
+    'model__subsample': [0.7, 0.8, 1.0],
+    'model__colsample_bytree': [0.7, 0.8, 1.0],
+}
 
 ```
-model_pipeline.fit(X_train, y_train)
-```
-5️⃣ Model Evaluation
-Evaluated using multiple metrics.
 
-```
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, roc_auc_score, classification_report
+---
 
-y_pred = model_pipeline.predict(X_test)
-y_proba = model_pipeline.predict_proba(X_test)[:, 1]
+### 5️⃣ Model Evaluation
+Evaluated using key performance metrics.
+
+```python
 
 print("Accuracy:", accuracy_score(y_test, y_pred))
 print("Precision:", precision_score(y_test, y_pred))
@@ -90,44 +115,65 @@ print("ROC-AUC:", roc_auc_score(y_test, y_proba))
 print("\nClassification Report:\n", classification_report(y_test, y_pred))
 ```
 
-6️⃣ Model Saving
+---
 
-```
+## 📈 Key Metrics
+
+| Metric | Score |
+|:--------|:-------:|
+| Accuracy | 0.87 |
+| Precision | 0.94 |
+| Recall | 0.47 |
+| F1-score | 0.63 |
+| ROC-AUC | 0.83 |
+
+---
+
+### 6️⃣ Model Saving
+Saved the best pipeline model for deployment.
+
+```python
 import joblib
-joblib.dump(model_pipeline, 'loan_default_model.pkl')
+joblib.dump(search.best_estimator_, 'loan_default_pipeline.pkl')
 ```
-📈 Key Metrics
 
-Metric	Score
-
-- Accuracy: 0.8651711845025897
-
-- Precision: 0.9481276005547851
-
-- Recall: 0.47209944751381216
-
-- F1-score: 0.630336560627017
-
-- ROC-AUC: 0.8288783577400873
-
+✅ **Model saved as:** `loan_default_pipeline.pkl`
 
 ---
 
-🚀 Next Steps
+## 💻 Streamlit App Integration
+A simple **Streamlit interface** was built to make real-time predictions using the saved model.
 
-- Add more models (Decision Tree, Random Forest, XGBoost)
-
-
-- Perform Hyperparameter Tuning using GridSearchCV
+```python
 
 
-- Deploy model using Flask or FastAPI
+@st.cache_resource
+def load_model():
+    return joblib.load("loan_default_pipeline.pkl")
+
+pipeline = load_model()
+
+st.title("🏦 Loan Default Prediction App")
+
+loan_amount = st.number_input("Loan Amount", min_value=1000, max_value=1000000, step=1000)
+income = st.number_input("Applicant Income", min_value=0, max_value=1000000, step=1000)
+gender = st.selectbox("Gender", ["Male", "Female"])
+
+
+```
 
 ---
 
-👨‍💻 Author
+## 🚀 Next Steps
+- Add more ML models (**Decision Tree**, **Random Forest**, **XGBoost**)  
+- Perform deeper hyperparameter tuning (**GridSearchCV**)  
+- Deploy model using **Flask / FastAPI**  
+- Add explainability tools (**SHAP / LIME**)  
+- Enhance UI for user-friendly prediction input  
 
-Revan Mahesh Gaikwad
+---
 
-(Machine Learning & Data Science Enthusiast)
+## 👨‍💻 Author
+**Revan Mahesh Gaikwad**  
+*Machine Learning & Data Science Enthusiast*  
 
